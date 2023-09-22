@@ -5,7 +5,7 @@ author        = "Fabio Nascimento"
 description   = "Rinha backend 2023 - Nim impl"
 license       = "MIT"
 srcDir        = "src"
-bin           = @["rinha2023_nim"]
+bin           = @["rinha"]
 
 
 # Dependencies

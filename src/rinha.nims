@@ -1,0 +1,8 @@
+switch("cc", "gcc")
+switch("define", "release")
+switch("opt", "speed")
+switch("threads", "on")
+switch("verbosity", "0")
+switch("define", "coresToUse=1")
+switch("define", "workerThreads=32")
+switch("out", "rinha_nim")
