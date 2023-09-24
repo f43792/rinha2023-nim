@@ -1,5 +1,7 @@
 # import options
 # General templates
+import types
+import db_connector/db_postgres
 
 # Python "kind" print function
 template print*(text: untyped, lend: string = "\n", flush: bool = true): untyped =
@@ -12,11 +14,13 @@ template loop*(body: untyped): untyped =
   while true:
     body
 
-# proc `$`*[T: object](x: T): string =
-#   result = ""
-#   for name, val in fieldPairs(x):
-#     if val.isSome():
-#       result.add name
-#       result.add ": "
-#       result.add $val.get()
-#       result.add "\n"
+template db_exec*(dbenv: PgConfig, conn: untyped, body: untyped): untyped =
+  var conn: DbConn
+  try:
+    conn = open(dbenv.hostname, dbenv.username, dbenv.password, dbenv.database)
+    body
+  except:
+    # quit("Error opening db connection")
+    raise
+  finally:
+    conn.close()
