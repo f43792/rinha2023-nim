@@ -1,5 +1,5 @@
 import std/[options,json]
-import os, strutils
+import os
 
 # Config definition
 type
@@ -10,46 +10,7 @@ type
     password*: string
     database*: string
     poolSize*: int
-
-proc parseEnv*() : PgConfig =
-  var config = PgConfig()
-  let hostname = getEnv("DB_HOST")
-  if len(hostname) == 0:
-    config.hostname = "localhost"
-  else:
-    config.hostname = hostname
-
-  try:
-    let port = parseInt(getEnv("DB_PORT"))
-    config.port = port
-  except:
-    config.port = 5432
-
-  let username = getEnv("DB_USERNAME")
-  if len(username) == 0:
-    config.username = "postgres"
-  else:
-    config.username = username
-
-  let password = getEnv("DB_PASSWORD")
-  if len(password) == 0:
-    config.password = "password"
-  else:
-    config.password = password
-
-  let database = getEnv("DB_DATABASE")
-  if len(database) == 0:
-    config.database = "postgres"
-  else:
-    config.database = database
-
-  try:
-    let poolSize = parseInt(getEnv("DB_POOL_SIZE"))
-    config.poolSize = poolSize
-  except:
-    config.poolSize = 10
-
-  return config
+    data_samples*: int
 
 # Model definition
 type
@@ -74,13 +35,13 @@ proc toJson*(p: seq[Pessoa]): JsonNode =
   for pessoa in p:
     result.add(pessoa.toJson())
 
-proc fromJson*(node: JsonNode, T: typedesc[Option[string]]): Option[string] =
+proc fromJson*(node: JsonNode, T: typedesc[string]): string =
   if node.kind == JString:
     return some(node.getStr)
   else:
     return none(string)
 
-proc fromJson*(node: JsonNode, T: typedesc[Option[seq[string]]]): Option[seq[string]] =
+proc fromJson*(node: JsonNode, T: typedesc[seq[string]]): seq[string] =
   if node.kind == JArray:
     var arr: seq[string] = @[]
     for child in node:
@@ -90,7 +51,7 @@ proc fromJson*(node: JsonNode, T: typedesc[Option[seq[string]]]): Option[seq[str
   else:
     return none(seq[string])
 
-proc fromJson*(node: JsonNode, T: typedesc[Pessoa]): Pessoa =
-  new(result)
-  for key, value in fieldpairs(result):
-    node[key] = value
+# proc fromJson*(node: JsonNode, T: typedesc[Pessoa]): Pessoa =
+#   new(result)
+#   for key, value in fieldpairs(result):
+#     node[key] = value
